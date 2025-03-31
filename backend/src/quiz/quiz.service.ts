@@ -1,26 +1,78 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class QuizService {
-  create(createQuizDto: CreateQuizDto) {
-    return 'This action adds a new quiz';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(dto: CreateQuizDto) {
+    return await this.prisma.quiz.create({
+      data: dto,
+    });
   }
 
-  findAll() {
-    return `This action returns all quiz`;
+  async findAll() {
+    return await this.prisma.quiz.findMany({
+      select: {
+        title: true,
+        category: {
+          select: {
+            title: true,
+            imageUrl: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} quiz`;
+  async findOne(id: string) {
+    const quiz = await this.prisma.quiz.findUnique({
+      where: { id },
+      select: {
+        title: true,
+        category: {
+          select: {
+            title: true,
+            imageUrl: true,
+          },
+        },
+        quizQuestions: {
+          select: {
+            question: {
+              select: {
+                title: true,
+                type: true,
+                options: true,
+                correctAnswer: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!quiz) throw new NotFoundException(`Quiz not found`);
+
+    return quiz;
   }
 
-  update(id: number, updateQuizDto: UpdateQuizDto) {
-    return `This action updates a #${id} quiz`;
+  async update(id: string, dto: UpdateQuizDto) {
+    await this.findOne(id);
+    return await this.prisma.quiz.update({
+      where: { id },
+      data: dto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} quiz`;
+  async remove(id: string) {
+    await this.findOne(id);
+    return await this.prisma.quiz.delete({
+      where: { id },
+    });
   }
 }

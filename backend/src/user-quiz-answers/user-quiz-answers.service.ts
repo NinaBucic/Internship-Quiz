@@ -1,21 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserQuizAnswerDto } from './dto/create-user-quiz-answer.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UserQuizAnswersService {
-  create(createUserQuizAnswerDto: CreateUserQuizAnswerDto) {
-    return 'This action adds a new userQuizAnswer';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createUserQuizAnswersDto: CreateUserQuizAnswerDto) {
+    return this.prisma.userQuizAnswers.create({
+      data: createUserQuizAnswersDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all userQuizAnswers`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} userQuizAnswer`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} userQuizAnswer`;
+  async findAllByQuiz(quizId: string) {
+    return await this.prisma.userQuizAnswers.findMany({
+      where: {
+        quizId,
+      },
+      include: {
+        quiz: {
+          select: {
+            title: true,
+          },
+        },
+        user: {
+          select: {
+            username: true,
+            email: true,
+            totalPoints: true,
+          },
+        },
+      },
+      orderBy: {
+        points: 'desc',
+      },
+    });
   }
 }
