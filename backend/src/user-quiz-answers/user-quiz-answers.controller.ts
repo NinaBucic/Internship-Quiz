@@ -1,11 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UserQuizAnswersService } from './user-quiz-answers.service';
 import { CreateUserQuizAnswerDto } from './dto/create-user-quiz-answer.dto';
-import { UpdateUserQuizAnswerDto } from './dto/update-user-quiz-answer.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user-quiz-answers')
 @Controller('user-quiz-answers')
 export class UserQuizAnswersController {
-  constructor(private readonly userQuizAnswersService: UserQuizAnswersService) {}
+  constructor(
+    private readonly userQuizAnswersService: UserQuizAnswersService,
+  ) {}
 
   @Post()
   create(@Body() createUserQuizAnswerDto: CreateUserQuizAnswerDto) {
@@ -20,11 +31,6 @@ export class UserQuizAnswersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userQuizAnswersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserQuizAnswerDto: UpdateUserQuizAnswerDto) {
-    return this.userQuizAnswersService.update(+id, updateUserQuizAnswerDto);
   }
 
   @Delete(':id')

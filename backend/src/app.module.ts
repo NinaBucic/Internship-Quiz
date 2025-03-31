@@ -11,7 +11,15 @@ import { UserQuizAnswersModule } from './user-quiz-answers/user-quiz-answers.mod
 import { QuizQuestionModule } from './quiz-question/quiz-question.module';
 
 @Module({
-  imports: [PrismaModule, UserModule, CategoryModule, QuizModule, QuestionModule, UserQuizAnswersModule, QuizQuestionModule],
+  imports: [
+    PrismaModule,
+    UserModule,
+    CategoryModule,
+    QuizModule,
+    QuestionModule,
+    UserQuizAnswersModule,
+    QuizQuestionModule,
+  ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
