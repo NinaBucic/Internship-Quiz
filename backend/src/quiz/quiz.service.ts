@@ -61,6 +61,26 @@ export class QuizService {
     return quiz;
   }
 
+  async searchByTitle(title: string) {
+    return await this.prisma.quiz.findMany({
+      where: {
+        title: {
+          contains: title,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        title: true,
+        category: {
+          select: {
+            title: true,
+            imageUrl: true,
+          },
+        },
+      },
+    });
+  }
+
   async update(id: string, dto: UpdateQuizDto) {
     await this.findOne(id);
     return await this.prisma.quiz.update({

@@ -6,11 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('quiz')
 @Controller('quiz')
@@ -25,10 +26,19 @@ export class QuizController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all quizzes' })
+  @ApiOperation({ summary: 'Get all quizzes or search by title' })
   @ApiResponse({ status: 200, description: 'List of quizzes.' })
-  async findAll() {
-    return await this.quizService.findAll();
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Search quizzes by title',
+  })
+  async findAll(@Query('search') search?: string) {
+    const trimmed = search?.trim();
+    if (trimmed) {
+      return this.quizService.searchByTitle(trimmed);
+    }
+    return this.quizService.findAll();
   }
 
   @Get(':id')
