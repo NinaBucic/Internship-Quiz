@@ -6,17 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { ApiResponse, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { AdminAuthGuard } from 'src/auth/guards/admin-auth.guard';
 
 @ApiTags('question')
 @Controller('question')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}
 
+  @UseGuards(AdminAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create a new question' })
   @ApiResponse({ status: 201, description: 'Question created successfully.' })
@@ -39,6 +42,7 @@ export class QuestionController {
     return await this.questionService.findOne(id);
   }
 
+  @UseGuards(AdminAuthGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Update a question by ID' })
   @ApiResponse({ status: 200, description: 'Question updated successfully.' })
@@ -47,6 +51,7 @@ export class QuestionController {
     return await this.questionService.update(id, dto);
   }
 
+  @UseGuards(AdminAuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a question by ID' })
   @ApiResponse({ status: 200, description: 'Question deleted successfully.' })
