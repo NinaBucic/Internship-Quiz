@@ -12,24 +12,6 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
-    try {
-      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-      return await this.prisma.user.create({
-        data: {
-          username: createUserDto.username,
-          email: createUserDto.email,
-          password: hashedPassword,
-        },
-      });
-    } catch (error: any) {
-      if (error.code === 'P2002') {
-        throw new ConflictException('Username or email already exists');
-      }
-      throw error;
-    }
-  }
-
   async findAll() {
     return await this.prisma.user.findMany({
       select: {
