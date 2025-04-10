@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -8,8 +12,49 @@ export class QuizService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateQuizDto) {
+    const { questionIds, ...quizData } = dto;
+
+    const categoryExists = await this.prisma.category.findUnique({
+      where: { id: dto.categoryId },
+    });
+
+    if (!categoryExists) {
+      throw new BadRequestException('Provided categoryId does not exist');
+    }
+
+    const uniqueQuestionIds = [...new Set(questionIds)];
+
+    if (uniqueQuestionIds.length < 5) {
+      throw new BadRequestException(
+        'A quiz must contain at least 5 unique questions',
+      );
+    }
+
+    const validQuestions = await this.prisma.question.findMany({
+      where: { id: { in: uniqueQuestionIds } },
+      select: { id: true },
+    });
+
+    if (validQuestions.length < uniqueQuestionIds.length) {
+      throw new BadRequestException(
+        'Some question IDs are invalid or missing from the database',
+      );
+    }
+
     return await this.prisma.quiz.create({
-      data: dto,
+      data: {
+        ...quizData,
+        quizQuestions: {
+          create: uniqueQuestionIds.map((id) => ({
+            question: { connect: { id } },
+          })),
+        },
+      },
+      include: {
+        quizQuestions: {
+          select: { question: true },
+        },
+      },
     });
   }
 
@@ -83,6 +128,17 @@ export class QuizService {
 
   async update(id: string, dto: UpdateQuizDto) {
     await this.findOne(id);
+
+    if (dto.categoryId) {
+      const categoryExists = await this.prisma.category.findUnique({
+        where: { id: dto.categoryId },
+      });
+
+      if (!categoryExists) {
+        throw new BadRequestException('Provided categoryId does not exist');
+      }
+    }
+
     return await this.prisma.quiz.update({
       where: { id },
       data: dto,

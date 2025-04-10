@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateQuizDto {
@@ -10,8 +10,21 @@ export class CreateQuizDto {
   @IsString()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Category ID to which the quiz belongs',
+    example: 'History',
+  })
   @IsNotEmpty()
   @IsString()
   categoryId: string;
+
+  @ApiProperty({
+    description: 'Array of question IDs to be linked to this quiz',
+    example: ['uuid-question-1', 'uuid-question-2'],
+    required: true,
+  })
+  @IsArray()
+  @ArrayMinSize(5, { message: 'A quiz must contain at least 5 questions' })
+  @IsString({ each: true })
+  questionIds: string[];
 }
