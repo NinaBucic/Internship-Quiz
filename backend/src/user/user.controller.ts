@@ -51,7 +51,14 @@ export class UserController {
     status: 409,
     description: 'Username or email already exists.',
   })
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() { user },
+  ) {
+    if (user.sub !== id) {
+      throw new ForbiddenException('You can only update your own profile');
+    }
     return await this.userService.update(id, updateUserDto);
   }
 

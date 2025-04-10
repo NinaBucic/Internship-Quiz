@@ -68,6 +68,8 @@ model UserQuizAnswers {
   updatedAt DateTime @updatedAt
   quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, quizId],name: "userId_quizId")
 }
 
 model QuizQuestion {

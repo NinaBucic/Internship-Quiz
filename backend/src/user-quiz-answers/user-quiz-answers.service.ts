@@ -6,10 +6,65 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UserQuizAnswersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserQuizAnswersDto: CreateUserQuizAnswerDto) {
-    return this.prisma.userQuizAnswers.create({
-      data: createUserQuizAnswersDto,
+  async create(userId: string, dto: CreateUserQuizAnswerDto) {
+    const existing = await this.prisma.userQuizAnswers.findUnique({
+      where: {
+        userId_quizId: {
+          userId,
+          quizId: dto.quizId,
+        },
+      },
     });
+
+    if (existing) {
+      if (dto.points > existing.points) {
+        const update = await this.prisma.userQuizAnswers.update({
+          where: {
+            userId_quizId: {
+              userId,
+              quizId: dto.quizId,
+            },
+          },
+          data: {
+            points: dto.points,
+          },
+        });
+
+        const difference = dto.points - existing.points;
+
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: {
+            totalPoints: {
+              increment: difference,
+            },
+          },
+        });
+
+        return update;
+      }
+
+      return existing;
+    }
+
+    const created = await this.prisma.userQuizAnswers.create({
+      data: {
+        userId,
+        quizId: dto.quizId,
+        points: dto.points,
+      },
+    });
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        totalPoints: {
+          increment: dto.points,
+        },
+      },
+    });
+
+    return created;
   }
 
   async findAllByQuiz(quizId: string) {
@@ -26,7 +81,6 @@ export class UserQuizAnswersService {
         user: {
           select: {
             username: true,
-            email: true,
             totalPoints: true,
           },
         },

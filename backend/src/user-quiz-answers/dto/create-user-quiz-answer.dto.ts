@@ -5,11 +5,6 @@ export class CreateUserQuizAnswerDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty()
-  userId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @ApiProperty()
   quizId: string;
 
   @IsNotEmpty()

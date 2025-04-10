@@ -3,10 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserQuizAnswersService } from './user-quiz-answers.service';
 import { CreateUserQuizAnswerDto } from './dto/create-user-quiz-answer.dto';
@@ -23,10 +22,21 @@ export class UserQuizAnswersController {
 
   @UseGuards(UserAuthGuard)
   @Post()
-  @ApiOperation({ summary: 'Create a new user quiz answer record' })
-  @ApiResponse({ status: 201, description: 'Record created successfully.' })
-  async create(@Body() createUserQuizAnswerDto: CreateUserQuizAnswerDto) {
-    return await this.userQuizAnswersService.create(createUserQuizAnswerDto);
+  @ApiOperation({
+    summary: 'Save quiz results for logged-in user (only best score counts)',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Quiz result saved and points updated',
+  })
+  async create(
+    @Req() { user },
+    @Body() createUserQuizAnswerDto: CreateUserQuizAnswerDto,
+  ) {
+    return await this.userQuizAnswersService.create(
+      user.sub,
+      createUserQuizAnswerDto,
+    );
   }
 
   @UseGuards(AdminAuthGuard)
