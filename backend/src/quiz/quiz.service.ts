@@ -19,7 +19,7 @@ export class QuizService {
     });
 
     if (!categoryExists) {
-      throw new BadRequestException('Provided categoryId does not exist');
+      throw new BadRequestException('Category not found');
     }
 
     const uniqueQuestionIds = [...new Set(questionIds)];
@@ -32,12 +32,18 @@ export class QuizService {
 
     const validQuestions = await this.prisma.question.findMany({
       where: { id: { in: uniqueQuestionIds } },
-      select: { id: true },
     });
 
     if (validQuestions.length < uniqueQuestionIds.length) {
       throw new BadRequestException(
         'Some question IDs are invalid or missing from the database',
+      );
+    }
+
+    const uniqueTypes = new Set(validQuestions.map((q) => q.type));
+    if (uniqueTypes.size < 2) {
+      throw new BadRequestException(
+        'Quiz must contain questions of at least 2 different types',
       );
     }
 
