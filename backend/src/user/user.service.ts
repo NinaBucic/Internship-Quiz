@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -21,9 +20,7 @@ export class UserService {
         role: true,
         totalPoints: true,
       },
-      orderBy: {
-        role: 'desc',
-      },
+      orderBy: [{ role: 'desc' }, { totalPoints: 'desc' }],
     });
   }
 
@@ -42,6 +39,33 @@ export class UserService {
       throw new NotFoundException(`User not found`);
     }
     return user;
+  }
+
+  async getRank(userId: string) {
+    const currentUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { totalPoints: true },
+    });
+
+    if (!currentUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    const betterRankCount = await this.prisma.user.count({
+      where: {
+        totalPoints: {
+          gt: currentUser.totalPoints,
+        },
+      },
+    });
+
+    const totalUsers = await this.prisma.user.count();
+
+    return {
+      rank: betterRankCount + 1,
+      totalUsers,
+      message: `You are currently ranked #${betterRankCount + 1} out of ${totalUsers} users`,
+    };
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

@@ -90,4 +90,41 @@ export class UserQuizAnswersService {
       },
     });
   }
+
+  async getUserQuizRank(userId: string, quizId: string) {
+    const userRecord = await this.prisma.userQuizAnswers.findUnique({
+      where: {
+        userId_quizId: {
+          userId,
+          quizId,
+        },
+      },
+      select: {
+        points: true,
+      },
+    });
+
+    if (!userRecord) {
+      throw new NotFoundException('You did not play this quiz yet.');
+    }
+
+    const higherScoreCount = await this.prisma.userQuizAnswers.count({
+      where: {
+        quizId,
+        points: {
+          gt: userRecord.points,
+        },
+      },
+    });
+
+    const totalPlayers = await this.prisma.userQuizAnswers.count({
+      where: { quizId },
+    });
+
+    return {
+      rank: higherScoreCount + 1,
+      totalPlayers,
+      message: `You are ranked #${higherScoreCount + 1} out of ${totalPlayers} players for this quiz`,
+    };
+  }
 }

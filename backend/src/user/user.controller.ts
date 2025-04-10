@@ -29,6 +29,13 @@ export class UserController {
     return await this.userService.findAll();
   }
 
+  @UseGuards(UserAuthGuard)
+  @Get('rank')
+  @ApiOperation({ summary: 'Get logged-in user rank by totalPoints' })
+  async getRank(@Req() { user }) {
+    return this.userService.getRank(user.sub);
+  }
+
   @UseGuards(AdminAuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get user by ID' })
@@ -39,8 +46,8 @@ export class UserController {
   }
 
   @UseGuards(UserAuthGuard)
-  @Patch(':id')
-  @ApiOperation({ summary: 'Update user by ID' })
+  @Patch()
+  @ApiOperation({ summary: 'Update your profile' })
   @ApiBody({
     description: 'User data to update a user',
     type: UpdateUserDto,
@@ -51,15 +58,8 @@ export class UserController {
     status: 409,
     description: 'Username or email already exists.',
   })
-  async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-    @Req() { user },
-  ) {
-    if (user.sub !== id) {
-      throw new ForbiddenException('You can only update your own profile');
-    }
-    return await this.userService.update(id, updateUserDto);
+  async update(@Body() updateUserDto: UpdateUserDto, @Req() { user }) {
+    return await this.userService.update(user.sub, updateUserDto);
   }
 
   @UseGuards(AdminAuthGuard)

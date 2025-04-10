@@ -46,4 +46,11 @@ export class UserQuizAnswersController {
   async findAllByQuiz(@Param('quizId') quizId: string) {
     return await this.userQuizAnswersService.findAllByQuiz(quizId);
   }
+
+  @UseGuards(UserAuthGuard)
+  @Get('rank/:quizId')
+  @ApiOperation({ summary: 'Get logged-in user rank for a specific quiz' })
+  async getQuizRank(@Req() { user }, @Param('quizId') quizId: string) {
+    return this.userQuizAnswersService.getUserQuizRank(user.sub, quizId);
+  }
 }
