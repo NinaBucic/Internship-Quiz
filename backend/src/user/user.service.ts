@@ -81,6 +81,13 @@ export class UserService {
       });
     } catch (error: any) {
       if (error.code === 'P2002') {
+        const field = error.meta?.target?.[0];
+        if (field === 'email') {
+          throw new ConflictException('Email already exists');
+        }
+        if (field === 'username') {
+          throw new ConflictException('Username already exists');
+        }
         throw new ConflictException('Username or email already exists');
       }
       throw error;

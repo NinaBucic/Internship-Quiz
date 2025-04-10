@@ -18,14 +18,20 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const existingUser = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ email: dto.email }, { username: dto.username }],
-      },
+    const existingEmail = await this.prisma.user.findUnique({
+      where: { email: dto.email },
     });
 
-    if (existingUser) {
-      throw new ConflictException('Username or email already in use');
+    if (existingEmail) {
+      throw new ConflictException('Email already in use');
+    }
+
+    const existingUsername = await this.prisma.user.findUnique({
+      where: { username: dto.username },
+    });
+
+    if (existingUsername) {
+      throw new ConflictException('Username already in use');
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
