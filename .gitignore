@@ -1,0 +1,18 @@
+# Node
+node_modules
+dist
+.env
+
+# Turbo cache
+.turbo
+
+# Logs
+*.log
+yarn-error.log
+
+# VS Code settings
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
