@@ -16,7 +16,7 @@ export const useRegister = () =>
       localStorage.setItem("jwt", JSON.stringify(data.access_token));
       toast.success("Registration successful!");
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Registration failed!");
+    onError: (error: string) => {
+      toast.error(error);
     },
   });

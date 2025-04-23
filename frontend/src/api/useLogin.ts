@@ -16,7 +16,7 @@ export const useLogin = () =>
       localStorage.setItem("jwt", JSON.stringify(data.access_token));
       toast.success("Login successful!");
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Login failed!");
+    onError: (error: string) => {
+      toast.error(error);
     },
   });
