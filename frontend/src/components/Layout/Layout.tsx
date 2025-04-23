@@ -3,6 +3,7 @@ import { ROUTES } from "../../router";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "../../types";
 import toast from "react-hot-toast";
+import { Navigation } from "../Navigation";
 
 export const Layout = () => {
   const location = useLocation();
@@ -28,5 +29,10 @@ export const Layout = () => {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Navigation />
+      <Outlet />
+    </>
+  );
 };
