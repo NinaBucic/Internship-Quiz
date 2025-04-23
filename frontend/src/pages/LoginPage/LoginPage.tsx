@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useLogin } from "../../api/useLogin";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../router";
 
 export const LoginPage = () => {
@@ -17,6 +17,9 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const loginMutation = useLogin();
 
+  const location = useLocation();
+  const from = location.state?.from?.pathname || ROUTES.QUIZZES_PAGE;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -24,7 +27,7 @@ export const LoginPage = () => {
       { email, password },
       {
         onSuccess: () => {
-          navigate(ROUTES.QUIZZES_PAGE);
+          navigate(from);
         },
       }
     );
@@ -73,7 +76,10 @@ export const LoginPage = () => {
         </Button>
       </form>
       <Typography mt={2} textAlign="center">
-        Don’t have an account? <Link to={ROUTES.REGISTER}>REGISTER</Link>
+        Don’t have an account?{" "}
+        <Link to={ROUTES.REGISTER} state={{ from: location.state?.from }}>
+          REGISTER
+        </Link>
       </Typography>
     </Box>
   );

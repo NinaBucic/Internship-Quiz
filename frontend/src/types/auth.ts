@@ -12,3 +12,9 @@ export type RegisterData = {
 export type JwtResponse = {
   access_token: string;
 };
+
+export type JwtPayload = {
+  exp: number;
+  sub: string;
+  role: string;
+};

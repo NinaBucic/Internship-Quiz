@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRegister } from "../../api/useRegister";
 import { ROUTES } from "../../router";
 import { validateEmail } from "../../utils";
@@ -21,6 +21,9 @@ export const RegisterPage = () => {
 
   const navigate = useNavigate();
   const registerMutation = useRegister();
+
+  const location = useLocation();
+  const from = location.state?.from?.pathname || ROUTES.QUIZZES_PAGE;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +49,7 @@ export const RegisterPage = () => {
       { username, email, password },
       {
         onSuccess: () => {
-          navigate(ROUTES.QUIZZES_PAGE);
+          navigate(from);
         },
       }
     );
@@ -113,7 +116,10 @@ export const RegisterPage = () => {
         </Button>
       </form>
       <Typography mt={2} textAlign="center">
-        Already have an account? <Link to={ROUTES.LOGIN}>LOGIN</Link>
+        Already have an account?{" "}
+        <Link to={ROUTES.LOGIN} state={{ from: location.state?.from }}>
+          LOGIN
+        </Link>
       </Typography>
     </Box>
   );

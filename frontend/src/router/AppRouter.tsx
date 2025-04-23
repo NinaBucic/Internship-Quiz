@@ -3,6 +3,8 @@ import { Home } from "../pages/Home";
 import { ROUTES } from "./routes";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
+import { Layout } from "../components/Layout";
+import { QuizzesPage } from "../pages/QuizzesPage";
 
 export const AppRouter = () => {
   return (
@@ -11,6 +13,10 @@ export const AppRouter = () => {
         <Route path={ROUTES.HOME} element={<Home />} />
         <Route path={ROUTES.LOGIN} element={<LoginPage />} />
         <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+
+        <Route element={<Layout />}>
+          <Route path={ROUTES.QUIZZES_PAGE} element={<QuizzesPage />} />
+        </Route>
       </Routes>
     </Router>
   );
