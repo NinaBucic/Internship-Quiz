@@ -82,7 +82,16 @@ export const QuizzesPage = () => {
       <Grid container spacing={3}>
         {filteredQuizzes.map((quiz) => (
           <Grid key={quiz.id} size={{ xs: 12, sm: 6, md: 4 }}>
-            <Card>
+            <Card
+              sx={{
+                transition: "transform 0.3s, box-shadow 0.3s",
+                cursor: "pointer",
+                "&:hover": {
+                  transform: "scale(1.03)",
+                  boxShadow: 6,
+                },
+              }}
+            >
               <CardMedia
                 component="img"
                 height="160"
