@@ -6,16 +6,33 @@ import {
   CardContent,
   CardMedia,
   CircularProgress,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  Select,
   Typography,
 } from "@mui/material";
 import { fallbackImage } from "../../constants";
+import { useEffect, useMemo, useState } from "react";
 
 export const QuizzesPage = () => {
   const [searchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
 
   const { data: quizzes, isLoading, isError } = useFetchQuizzes(search);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const uniqueCategories = useMemo(() => {
+    if (!quizzes) return [];
+    return Array.from(new Set(quizzes.map((q) => q.category.title)));
+  }, [quizzes]);
+
+  useEffect(() => {
+    if (!uniqueCategories.includes(selectedCategory)) {
+      setSelectedCategory("");
+    }
+  }, [uniqueCategories, selectedCategory]);
 
   if (isLoading)
     return (
@@ -38,13 +55,32 @@ export const QuizzesPage = () => {
       </Box>
     );
 
+  const filteredQuizzes = selectedCategory
+    ? quizzes.filter((quiz) => quiz.category.title === selectedCategory)
+    : quizzes;
+
   return (
     <Box p={4}>
       <Typography variant="h4" sx={{ mb: 5 }}>
         QUIZZES
       </Typography>
+      <FormControl fullWidth sx={{ maxWidth: 300, mb: 5 }}>
+        <InputLabel>Filter by Category</InputLabel>
+        <Select
+          value={selectedCategory}
+          label="Filter by Category"
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <MenuItem value="">All Categories</MenuItem>
+          {uniqueCategories.map((category) => (
+            <MenuItem key={category} value={category}>
+              {category}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <Grid container spacing={3}>
-        {quizzes.map((quiz) => (
+        {filteredQuizzes.map((quiz) => (
           <Grid key={quiz.id} size={{ xs: 12, sm: 6, md: 4 }}>
             <Card>
               <CardMedia
