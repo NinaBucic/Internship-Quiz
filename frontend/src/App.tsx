@@ -1,8 +1,15 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
+import { AppRouter } from "./router";
+
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <>
-      <h1>Vite + React</h1>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <AppRouter />
+      <Toaster />
+    </QueryClientProvider>
   );
 }
 
