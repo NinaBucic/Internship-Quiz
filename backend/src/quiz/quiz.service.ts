@@ -67,6 +67,7 @@ export class QuizService {
   async findAll() {
     return await this.prisma.quiz.findMany({
       select: {
+        id: true,
         title: true,
         category: {
           select: {
@@ -85,6 +86,7 @@ export class QuizService {
     const quiz = await this.prisma.quiz.findUnique({
       where: { id },
       select: {
+        id: true,
         title: true,
         category: {
           select: {
@@ -121,6 +123,7 @@ export class QuizService {
         },
       },
       select: {
+        id: true,
         title: true,
         category: {
           select: {
