@@ -3,3 +3,9 @@ export enum QuestionType {
   MultipleChoice = "MultipleChoice",
   ShortAnswer = "ShortAnswer",
 }
+
+export type Question = {
+  id: string;
+  title: string;
+  type: QuestionType;
+};
