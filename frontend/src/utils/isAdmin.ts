@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import { JwtPayload } from "../types";
+import { JwtPayload, UserRole } from "../types";
 
 export const isAdmin = (): boolean => {
   const token = localStorage.getItem("jwt");
@@ -7,7 +7,7 @@ export const isAdmin = (): boolean => {
 
   try {
     const decoded = jwtDecode<JwtPayload>(token);
-    return decoded.role === "Admin";
+    return decoded.role === UserRole.Admin;
   } catch {
     return false;
   }
