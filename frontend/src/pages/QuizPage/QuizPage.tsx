@@ -12,11 +12,13 @@ import {
 import { fallbackImage } from "../../constants";
 import { ROUTES } from "../../router";
 import { useState } from "react";
+import { QuestionItem } from "../../components/QuestionItem";
 
 export const QuizPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [answers, setAnswers] = useState<{ [index: number]: string }>({});
 
   const {
     data: quizDetails,
@@ -29,6 +31,10 @@ export const QuizPage = () => {
     isError: isRankError,
     error: rankError,
   } = useFetchUserQuizRank(quizId!);
+
+  const handleAnswerChange = (index: number, value: string) => {
+    setAnswers((prev) => ({ ...prev, [index]: value }));
+  };
 
   if (isQuizLoading)
     return (
@@ -53,7 +59,19 @@ export const QuizPage = () => {
           {quizDetails.title}
         </Typography>
 
-        {/* TODO: Render questions */}
+        <Box display="flex" flexDirection="column" gap={3}>
+          {quizDetails.quizQuestions.map((qq, index) => (
+            <QuestionItem
+              key={index}
+              index={index}
+              title={qq.question.title}
+              type={qq.question.type}
+              options={qq.question.options}
+              value={answers[index] || ""}
+              onChange={(value) => handleAnswerChange(index, value)}
+            />
+          ))}
+        </Box>
 
         <Button variant="contained" color="success" sx={{ mt: 4 }}>
           SUBMIT QUIZ
