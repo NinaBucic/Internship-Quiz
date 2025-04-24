@@ -7,4 +7,5 @@ export const ROUTES: Routes = {
   LOGIN: "/login",
   REGISTER: "/register",
   QUIZZES_PAGE: "/quizzes",
+  QUIZ_PAGE: "/quizzes/:quizId",
 };

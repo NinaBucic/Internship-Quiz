@@ -5,6 +5,7 @@ import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { Layout } from "../components/Layout";
 import { QuizzesPage } from "../pages/QuizzesPage";
+import { QuizPage } from "../pages/QuizPage";
 
 export const AppRouter = () => {
   return (
@@ -16,6 +17,7 @@ export const AppRouter = () => {
 
         <Route element={<Layout />}>
           <Route path={ROUTES.QUIZZES_PAGE} element={<QuizzesPage />} />
+          <Route path={ROUTES.QUIZ_PAGE} element={<QuizPage />} />
         </Route>
       </Routes>
     </Router>

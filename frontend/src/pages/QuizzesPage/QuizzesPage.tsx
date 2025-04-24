@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useFetchQuizzes } from "../../api/useFetchQuizzes";
 import {
   Box,
@@ -15,8 +15,11 @@ import {
 } from "@mui/material";
 import { fallbackImage } from "../../constants";
 import { useEffect, useMemo, useState } from "react";
+import { ROUTES } from "../../router";
 
 export const QuizzesPage = () => {
+  const navigate = useNavigate();
+
   const [searchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
 
@@ -91,6 +94,7 @@ export const QuizzesPage = () => {
                   boxShadow: 6,
                 },
               }}
+              onClick={() => navigate(`${ROUTES.QUIZZES_PAGE}/${quiz.id}`)}
             >
               <CardMedia
                 component="img"
