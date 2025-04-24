@@ -10,4 +10,5 @@ export const ROUTES: Routes = {
   QUIZ_PAGE: "/quizzes/:quizId",
   ADMIN_USERS: "/admin/users",
   ADMIN_CREATE_QUIZ: "/admin/create-quiz",
+  NOT_FOUND_PAGE: "*",
 };
