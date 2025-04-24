@@ -1,17 +1,20 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFetchQuiz } from "../../api/useFetchQuiz";
 import { useFetchUserQuizRank } from "../../api/useFetchUserQuizRank";
 import {
   Box,
+  Button,
   Card,
   CardMedia,
   CircularProgress,
   Typography,
 } from "@mui/material";
 import { fallbackImage } from "../../constants";
+import { ROUTES } from "../../router";
 
 export const QuizPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
+  const navigate = useNavigate();
 
   const {
     data: quizDetails,
@@ -74,6 +77,19 @@ export const QuizPage = () => {
           </Typography>
         )
       )}
+
+      <Box display="flex" gap={2} mt={2}>
+        <Button variant="contained" color="primary" /*onClick={handleStart}*/>
+          PLAY QUIZ
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => navigate(ROUTES.QUIZZES_PAGE)}
+        >
+          BACK TO QUIZZES
+        </Button>
+      </Box>
     </Box>
   );
 };
