@@ -4,3 +4,8 @@ export type UserQuizRank = {
   totalPlayers: number;
   message: string;
 };
+
+export type CreateUserQuizAnswer = {
+  quizId: string;
+  points: number;
+};
