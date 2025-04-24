@@ -11,9 +11,23 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useFetchAdminUsers } from "../../api/useFetchAdminUsers";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { isAdmin } from "../../utils";
+import toast from "react-hot-toast";
+import { ROUTES } from "../../router";
 
 export const AdminUsersPage = () => {
   const { data: users, isLoading, isError } = useFetchAdminUsers();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAdmin()) {
+      toast.error("You are not authorized to access this page.");
+      navigate(ROUTES.QUIZZES_PAGE);
+    }
+  }, [navigate]);
 
   if (isLoading) {
     return (
