@@ -20,6 +20,7 @@ export const QuizPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [answers, setAnswers] = useState<{ [index: number]: string }>({});
 
   const {
@@ -40,8 +41,8 @@ export const QuizPage = () => {
   };
 
   const handlePlay = () => {
-    setAnswers({});
     setIsPlaying(true);
+    setIsSubmitted(false);
   };
 
   const { mutate: submitQuiz } = useSubmitQuizResult();
@@ -63,7 +64,7 @@ export const QuizPage = () => {
     );
 
   const handleSubmit = () => {
-    let points = 0;
+    let score = 0;
 
     quizDetails.quizQuestions.forEach((qq, index) => {
       const userAnswer = String(answers[index]).trim().toLowerCase();
@@ -72,18 +73,17 @@ export const QuizPage = () => {
         .toLowerCase();
 
       if (userAnswer === correctAnswer) {
-        points++;
+        score++;
       }
     });
 
     submitQuiz(
-      { quizId: quizId!, points },
+      { quizId: quizId!, points: score },
       {
         onSuccess: () => {
           toast.success(
-            `You scored ${points}/${quizDetails.quizQuestions.length} point(s)!`
+            `You scored ${score}/${quizDetails.quizQuestions.length} point(s)!`
           );
-          setIsPlaying(false);
           refetchUserRank();
         },
         onError: (error) => {
@@ -91,6 +91,14 @@ export const QuizPage = () => {
         },
       }
     );
+
+    setIsSubmitted(true);
+  };
+
+  const handleCloseResults = () => {
+    setIsSubmitted(false);
+    setIsPlaying(false);
+    setAnswers({});
   };
 
   if (isPlaying) {
@@ -101,27 +109,52 @@ export const QuizPage = () => {
         </Typography>
 
         <Box display="flex" flexDirection="column" gap={3}>
-          {quizDetails.quizQuestions.map((qq, index) => (
-            <QuestionItem
-              key={index}
-              index={index}
-              title={qq.question.title}
-              type={qq.question.type}
-              options={qq.question.options}
-              value={answers[index] || ""}
-              onChange={(value) => handleAnswerChange(index, value)}
-            />
-          ))}
+          {quizDetails.quizQuestions.map((qq, index) => {
+            const userAnswer = String(answers[index] || "")
+              .trim()
+              .toLowerCase();
+            const correctAnswer = String(qq.question.correctAnswer)
+              .trim()
+              .toLowerCase();
+
+            const isCorrect = userAnswer === correctAnswer;
+
+            return (
+              <QuestionItem
+                key={index}
+                index={index}
+                title={qq.question.title}
+                type={qq.question.type}
+                options={qq.question.options}
+                value={answers[index] || ""}
+                onChange={(value) => handleAnswerChange(index, value)}
+                isSubmitted={isSubmitted}
+                isCorrect={isCorrect}
+                disabled={isSubmitted}
+              />
+            );
+          })}
         </Box>
 
-        <Button
-          variant="contained"
-          color="success"
-          sx={{ mt: 4 }}
-          onClick={handleSubmit}
-        >
-          SUBMIT QUIZ
-        </Button>
+        {!isSubmitted ? (
+          <Button
+            variant="contained"
+            color="success"
+            sx={{ mt: 4 }}
+            onClick={handleSubmit}
+          >
+            SUBMIT QUIZ
+          </Button>
+        ) : (
+          <Button
+            variant="outlined"
+            color="primary"
+            sx={{ mt: 4 }}
+            onClick={handleCloseResults}
+          >
+            CLOSE RESULTS
+          </Button>
+        )}
       </Box>
     );
   }
