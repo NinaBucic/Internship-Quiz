@@ -6,6 +6,7 @@ import { RegisterPage } from "../pages/RegisterPage";
 import { Layout } from "../components/Layout";
 import { QuizzesPage } from "../pages/QuizzesPage";
 import { QuizPage } from "../pages/QuizPage";
+import { AdminUsersPage } from "../pages/AdminUsersPage";
 
 export const AppRouter = () => {
   return (
@@ -18,8 +19,7 @@ export const AppRouter = () => {
         <Route element={<Layout />}>
           <Route path={ROUTES.QUIZZES_PAGE} element={<QuizzesPage />} />
           <Route path={ROUTES.QUIZ_PAGE} element={<QuizPage />} />
-          {/* <Route path={ROUTES.ADMIN_USERS} />
-          <Route path={ROUTES.ADMIN_CREATE_QUIZ} /> */}
+          <Route path={ROUTES.ADMIN_USERS} element={<AdminUsersPage />} />
         </Route>
       </Routes>
     </Router>
