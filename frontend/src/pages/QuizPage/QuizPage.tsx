@@ -11,10 +11,12 @@ import {
 } from "@mui/material";
 import { fallbackImage } from "../../constants";
 import { ROUTES } from "../../router";
+import { useState } from "react";
 
 export const QuizPage = () => {
   const { quizId } = useParams<{ quizId: string }>();
   const navigate = useNavigate();
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const {
     data: quizDetails,
@@ -44,6 +46,22 @@ export const QuizPage = () => {
       </Box>
     );
 
+  if (isPlaying) {
+    return (
+      <Box p={4}>
+        <Typography variant="h4" sx={{ mb: 5 }}>
+          {quizDetails.title}
+        </Typography>
+
+        {/* TODO: Render questions */}
+
+        <Button variant="contained" color="success" sx={{ mt: 4 }}>
+          SUBMIT QUIZ
+        </Button>
+      </Box>
+    );
+  }
+
   return (
     <Box p={4}>
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -64,11 +82,9 @@ export const QuizPage = () => {
         Category: {quizDetails.category.title}
       </Typography>
 
-      {isRankError ? (
-        <Typography color="text.secondary">
-          {typeof rankError === "string"
-            ? rankError
-            : rankError?.message || "Something went wrong."}
+      {isRankError && typeof rankError === "string" ? (
+        <Typography color="text.secondary" sx={{ mt: 3 }}>
+          {rankError}
         </Typography>
       ) : (
         userRank && (
@@ -79,7 +95,11 @@ export const QuizPage = () => {
       )}
 
       <Box display="flex" gap={2} mt={2}>
-        <Button variant="contained" color="primary" /*onClick={handleStart}*/>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setIsPlaying(true)}
+        >
           PLAY QUIZ
         </Button>
         <Button
