@@ -8,4 +8,6 @@ export const ROUTES: Routes = {
   REGISTER: "/register",
   QUIZZES_PAGE: "/quizzes",
   QUIZ_PAGE: "/quizzes/:quizId",
+  ADMIN_USERS: "/admin/users",
+  ADMIN_CREATE_QUIZ: "/admin/create-quiz",
 };

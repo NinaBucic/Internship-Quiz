@@ -18,6 +18,8 @@ export const AppRouter = () => {
         <Route element={<Layout />}>
           <Route path={ROUTES.QUIZZES_PAGE} element={<QuizzesPage />} />
           <Route path={ROUTES.QUIZ_PAGE} element={<QuizPage />} />
+          {/* <Route path={ROUTES.ADMIN_USERS} />
+          <Route path={ROUTES.ADMIN_CREATE_QUIZ} /> */}
         </Route>
       </Routes>
     </Router>

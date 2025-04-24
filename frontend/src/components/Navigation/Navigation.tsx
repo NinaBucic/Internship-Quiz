@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { ROUTES } from "../../router";
 import { AppBar, Box, Button, TextField, Toolbar } from "@mui/material";
+import { isAdmin } from "../../utils";
 
 export const Navigation = () => {
   const [search, setSearch] = useState("");
@@ -29,7 +30,8 @@ export const Navigation = () => {
 
   if (
     !location.pathname.startsWith("/quizzes") &&
-    !location.pathname.startsWith("/quiz")
+    !location.pathname.startsWith("/quiz") &&
+    !location.pathname.startsWith("/admin")
   ) {
     return null;
   }
@@ -48,9 +50,28 @@ export const Navigation = () => {
             Search
           </Button>
         </Box>
-        <Button onClick={handleLogout} color="error" variant="outlined">
-          Logout
-        </Button>
+
+        <Box display="flex" gap={1}>
+          {isAdmin() && (
+            <>
+              <Button
+                variant="outlined"
+                onClick={() => navigate(ROUTES.ADMIN_USERS)}
+              >
+                Users
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => navigate(ROUTES.ADMIN_CREATE_QUIZ)}
+              >
+                Create Quiz
+              </Button>
+            </>
+          )}
+          <Button onClick={handleLogout} color="error" variant="outlined">
+            Logout
+          </Button>
+        </Box>
       </Toolbar>
     </AppBar>
   );
