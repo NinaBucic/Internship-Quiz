@@ -5,3 +5,5 @@ export const LOGIN_USER_PATH = "/auth/login";
 export const REGISTER_USER_PATH = "/auth/register";
 
 export const QUIZZES_PATH = "/quiz";
+
+export const USER_QUIZ_ANSWERS_PATH = "/user-quiz-answers";

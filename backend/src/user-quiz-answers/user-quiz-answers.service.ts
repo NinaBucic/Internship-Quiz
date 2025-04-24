@@ -122,6 +122,7 @@ export class UserQuizAnswersService {
     });
 
     return {
+      points: userRecord.points,
       rank: higherScoreCount + 1,
       totalPlayers,
       message: `You are ranked #${higherScoreCount + 1} out of ${totalPlayers} players for this quiz`,

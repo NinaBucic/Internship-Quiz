@@ -39,18 +39,18 @@ export class UserQuizAnswersController {
     );
   }
 
+  @UseGuards(UserAuthGuard)
+  @Get('rank/:quizId')
+  @ApiOperation({ summary: 'Get logged-in user rank for a specific quiz' })
+  async getQuizRank(@Req() { user }, @Param('quizId') quizId: string) {
+    return this.userQuizAnswersService.getUserQuizRank(user.sub, quizId);
+  }
+
   @UseGuards(AdminAuthGuard)
   @Get(':quizId')
   @ApiOperation({ summary: 'Retrieve all answer records for quiz' })
   @ApiResponse({ status: 200, description: 'List of records.' })
   async findAllByQuiz(@Param('quizId') quizId: string) {
     return await this.userQuizAnswersService.findAllByQuiz(quizId);
-  }
-
-  @UseGuards(UserAuthGuard)
-  @Get('rank/:quizId')
-  @ApiOperation({ summary: 'Get logged-in user rank for a specific quiz' })
-  async getQuizRank(@Req() { user }, @Param('quizId') quizId: string) {
-    return this.userQuizAnswersService.getUserQuizRank(user.sub, quizId);
   }
 }

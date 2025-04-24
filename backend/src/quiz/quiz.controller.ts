@@ -14,6 +14,7 @@ import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminAuthGuard } from 'src/auth/guards/admin-auth.guard';
+import { UserAuthGuard } from 'src/auth/guards/user-auth.guard';
 
 @ApiTags('quiz')
 @Controller('quiz')
@@ -44,7 +45,7 @@ export class QuizController {
     return this.quizService.findAll();
   }
 
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(UserAuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get quiz by ID' })
   @ApiResponse({ status: 200, description: 'Quiz found.' })
