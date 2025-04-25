@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { useFetchCategories } from "../../api/useFetchCategories";
 import { useFetchQuestions } from "../../api/useFetchQuestions";
+import { useCreateQuiz } from "../../api/useCreateQuiz";
 
 export const AdminCreateQuizPage = () => {
   const navigate = useNavigate();
@@ -35,6 +36,7 @@ export const AdminCreateQuizPage = () => {
   const { data: categories, isLoading: loadingCategories } =
     useFetchCategories();
   const { data: questions, isLoading: loadingQuestions } = useFetchQuestions();
+  const { mutate: createQuiz, isPending } = useCreateQuiz();
 
   const handleToggleQuestion = (id: string) => {
     setSelectedQuestionIds((prev) =>
@@ -57,6 +59,19 @@ export const AdminCreateQuizPage = () => {
       toast.error("Select questions of at least two different types");
       return;
     }
+
+    createQuiz(
+      { title, categoryId, questionIds: selectedQuestionIds },
+      {
+        onSuccess: () => {
+          toast.success("Quiz created successfully!");
+          setTitle("");
+          setCategoryId("");
+          setSelectedQuestionIds([]);
+        },
+        onError: (error) => toast.error(error.message),
+      }
+    );
   };
 
   if (loadingCategories || loadingQuestions) {
@@ -122,7 +137,12 @@ export const AdminCreateQuizPage = () => {
           ))}
         </Box>
 
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          disabled={isPending}
+        >
           Create Quiz
         </Button>
       </Box>

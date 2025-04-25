@@ -25,3 +25,9 @@ export type QuizDetails = {
     };
   }[];
 };
+
+export type CreateQuizDto = {
+  title: string;
+  categoryId: string;
+  questionIds: string[];
+};
