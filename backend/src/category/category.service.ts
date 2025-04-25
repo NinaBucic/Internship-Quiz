@@ -39,6 +39,7 @@ export class CategoryService {
   async findAll() {
     return await this.prisma.category.findMany({
       select: {
+        id: true,
         title: true,
         imageUrl: true,
       },
@@ -49,6 +50,7 @@ export class CategoryService {
     const category = await this.prisma.category.findUnique({
       where: { id },
       select: {
+        id: true,
         title: true,
         imageUrl: true,
       },

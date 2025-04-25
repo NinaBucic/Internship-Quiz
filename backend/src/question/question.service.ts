@@ -14,6 +14,7 @@ export class QuestionService {
   async findAll() {
     return await this.prisma.question.findMany({
       select: {
+        id: true,
         title: true,
         type: true,
         category: {
@@ -36,6 +37,7 @@ export class QuestionService {
     const question = await this.prisma.question.findUnique({
       where: { id },
       select: {
+        id: true,
         title: true,
         type: true,
         category: {
