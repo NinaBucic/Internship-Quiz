@@ -1,4 +1,6 @@
-export const BASE_URL = "http://localhost:3000/api";
+//export const BASE_URL = "http://localhost:3000/api";
+export const VITE_API_BASE_URL =
+  "https://internship-quiz-kbja.onrender.com/api";
 
 export const LOGIN_USER_PATH = "/auth/login";
 

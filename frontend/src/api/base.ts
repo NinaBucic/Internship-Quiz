@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { BASE_URL } from "../constants";
+import { VITE_API_BASE_URL } from "../constants";
 
 export const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
